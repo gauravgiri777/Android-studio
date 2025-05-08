@@ -13,6 +13,17 @@
         android:theme="@style/Theme.MyApplication"
         tools:targetApi="31">
         <activity
+            android:name=".LoginActivity1"
+            android:exported="true"
+            android:label="@string/title_activity_login1"
+            android:theme="@style/Theme.MyApplication">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".ProfileActivity"
             android:exported="true"
             android:label="@string/title_activity_profile"
@@ -53,6 +64,5 @@
             </intent-filter>
         </activity>
     </application>
-    
 
 </manifest>

@@ -1,4 +1,4 @@
-package com.example.softwareengine
+package com.example.myapplication
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -16,26 +16,28 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-// Data class for card items
+// --- Data model ---
 data class CardItem(val title: String, val iconRes: Int)
 
-// List of card items
+// --- List of card items ---
 val cardItems = listOf(
-    CardItem("Text", R.drawable.baseline_text_fields_24),
-    CardItem("Address", R.drawable.baseline_add_location_24),
+    CardItem("Text", R.drawable.baseline_expand_more_24),
+    CardItem("Address", R.drawable.baseline_expand_more_24),
     CardItem("Character", R.drawable.baseline_text_fields_24),
-    CardItem("Bank card", R.drawable.baseline_add_card_24),
-    CardItem("Password", R.drawable.baseline_password_24),
-    CardItem("Logistics", R.drawable.baseline_add_24)
+    CardItem("Bank card", R.drawable.baseline_expand_more_24),
+    CardItem("Password", R.drawable.baseline_expand_more_24),
+    CardItem("Logistics", R.drawable.baseline_expand_more_24)
 )
 
-class LoginActivity2 : ComponentActivity() {
+// --- Main Activity ---
+class ProfileActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -50,6 +52,25 @@ class LoginActivity2 : ComponentActivity() {
     }
 }
 
+// --- Composable: Safe Image Loader for Previews ---
+@Composable
+fun SafeImage(resId: Int, contentDescription: String?, modifier: Modifier = Modifier) {
+    val isInPreview = LocalInspectionMode.current
+    if (isInPreview) {
+        Box(
+            modifier = modifier
+                .background(Color.Gray, shape = CircleShape)
+        )
+    } else {
+        Image(
+            painter = painterResource(id = resId),
+            contentDescription = contentDescription,
+            modifier = modifier
+        )
+    }
+}
+
+// --- Composable: Main Screen ---
 @Composable
 fun CardScreen(modifier: Modifier = Modifier) {
     Column(
@@ -57,7 +78,7 @@ fun CardScreen(modifier: Modifier = Modifier) {
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        // Profile row
+        // --- Profile Row ---
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -65,8 +86,8 @@ fun CardScreen(modifier: Modifier = Modifier) {
             horizontalArrangement = Arrangement.End,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.me), // Your profile image
+            SafeImage(
+                resId = R.drawable.profile,
                 contentDescription = "Profile",
                 modifier = Modifier
                     .size(36.dp)
@@ -74,7 +95,7 @@ fun CardScreen(modifier: Modifier = Modifier) {
             )
         }
 
-        // Title texts
+        // --- Title Texts ---
         Text(
             text = "Card",
             fontSize = 28.sp,
@@ -91,7 +112,7 @@ fun CardScreen(modifier: Modifier = Modifier) {
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        // Card grid
+        // --- Card Grid (LazyColumn) ---
         LazyColumn(
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -111,18 +132,19 @@ fun CardScreen(modifier: Modifier = Modifier) {
             }
         }
 
-        Spacer(modifier = Modifier.height(1.dp))
+        Spacer(modifier = Modifier.height(16.dp)) // Slightly more spacing
 
-        // Settings card
+        // --- Settings Card ---
         SettingsCard()
     }
 }
 
+// --- Composable: Single Card Item ---
 @Composable
 fun CardItemView(item: CardItem, modifier: Modifier = Modifier) {
     Card(
         modifier = modifier.height(160.dp),
-        elevation = CardDefaults.cardElevation(8.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -131,8 +153,8 @@ fun CardItemView(item: CardItem, modifier: Modifier = Modifier) {
                 .fillMaxSize()
                 .padding(8.dp)
         ) {
-            Image(
-                painter = painterResource(id = item.iconRes), // <-- FIXED: Now uses item.iconRes
+            SafeImage(
+                resId = item.iconRes,
                 contentDescription = item.title,
                 modifier = Modifier.size(48.dp)
             )
@@ -142,13 +164,14 @@ fun CardItemView(item: CardItem, modifier: Modifier = Modifier) {
     }
 }
 
+// --- Composable: Settings Card ---
 @Composable
 fun SettingsCard() {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .height(80.dp),
-        elevation = CardDefaults.cardElevation(8.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -158,17 +181,22 @@ fun SettingsCard() {
                 .padding(16.dp)
         ) {
             Icon(
-                painter = painterResource(id = R.drawable.baseline_settings_24), // <-- Your custom settings image
+                painter = painterResource(id = R.drawable.baseline_expand_more_24),
                 contentDescription = "Settings",
                 modifier = Modifier.size(32.dp),
-                tint = Color.Unspecified // <-- Show original icon color
+                tint = Color.Unspecified // Keep original icon color
             )
             Spacer(modifier = Modifier.width(16.dp))
-            Text(text = "Settings", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+            Text(
+                text = "Settings",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
+            )
         }
     }
 }
 
+// --- Preview ---
 @Preview(showBackground = true)
 @Composable
 fun CardScreenPreview() {
